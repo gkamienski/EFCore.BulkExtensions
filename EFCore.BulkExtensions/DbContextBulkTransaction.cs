@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -83,6 +84,11 @@ internal static class DbContextBulkTransaction
             else
             {
                 TableInfo tableInfo = TableInfo.CreateInstance(context, type, entities, operationType, bulkConfig);
+
+                foreach (var key in tableInfo.ColumnNamesTypesDict.Keys.Where(key => tableInfo.ColumnNamesTypesDict[key] == "time"))
+                {
+                    tableInfo.ColumnNamesTypesDict[key] = "time without time zone";
+                }
 
                 if (operationType == OperationType.Insert && !tableInfo.BulkConfig.SetOutputIdentity)
                 {
